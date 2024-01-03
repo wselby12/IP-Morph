@@ -1,0 +1,7 @@
+# requirements.txt
+
+# ProtonVPN CLI
+protonvpn-cli==3.13.0
+
+# Python libraries
+requests==2.26.0
