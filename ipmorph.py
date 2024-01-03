@@ -10,6 +10,9 @@ import subprocess
 import warnings
 import re
 import socket
+import os
+# Disable output buffering
+os.environ['PYTHONUNBUFFERED'] = '1'
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="protonvpn_cli")
 
@@ -65,19 +68,18 @@ protonvpn_username = input("👤 Enter your ProtonVPN username: ")
 # Run protonvpn-cli whoami command to check login status
 # Run protonvpn-cli whoami command to check login status
 # Function to check if the provided IP address is reachable
-def is_ip_reachable(ip_address):
+# Check if the ProtonVPN server is reachable
+# Function to check if ProtonVPN is already connected
+def is_protonvpn_connected():
     try:
-        # Create a socket to the provided IP address on a common port (e.g., 80 for HTTP)
-        with socket.create_connection((ip_address, 80), timeout=2):
-            return True
-    except OSError:
+        status_command = "protonvpn-cli status"
+        status_output = subprocess.check_output(status_command, shell=True, text=True)
+        return "You are logged in as" in status_output
+    except subprocess.CalledProcessError:
         return False
 
-# IP address of a ProtonVPN server to check against
-protonvpn_ip_address = "xxx.xxx.xxx.xxx"  # Replace with an actual ProtonVPN server IP
-
-# Check if the ProtonVPN server is reachable (assuming you're already connected)
-if is_ip_reachable(protonvpn_ip_address):
+# Check if ProtonVPN is already connected
+if is_protonvpn_connected():
     lively_print("User is already connected to ProtonVPN. Proceeding with the script.")
 else:
     lively_print("User is not connected to ProtonVPN. Logging in...")
@@ -90,6 +92,7 @@ else:
     except subprocess.CalledProcessError as e:
         lively_print(f"Error during login. Return code: {e.returncode}")
         sys.exit(1)
+
 
 # ... (remaining code)
 
