@@ -11,6 +11,7 @@ import warnings
 import re
 import socket
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="protonvpn_cli")
 
 def run_command(command):
     try:
